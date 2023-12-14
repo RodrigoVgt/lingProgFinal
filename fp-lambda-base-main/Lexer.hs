@@ -8,6 +8,7 @@ data Expr = BTrue
           | Add Expr Expr 
           | Sub Expr Expr
           | And Expr Expr 
+          | Or Expr Expr
           | If Expr Expr Expr 
           | Var String
           | Lam String Ty Expr 
@@ -27,6 +28,7 @@ data Token = TokenTrue
            | TokenAdd
            | TokenSub
            | TokenAnd 
+           | TokenOr 
            | TokenIf 
            | TokenThen 
            | TokenElse
@@ -63,7 +65,9 @@ lexNum cs = case span isDigit cs of
 lexSymbol :: String -> [Token]
 lexSymbol cs = case span isSymb cs of 
                  ("+", rest)  -> TokenAdd : lexer rest 
-                 ("&&", rest) -> TokenAnd : lexer rest 
+                 ("-", rest)  -> TokenSub : lexer rest
+                 ("&&", rest) -> TokenAnd : lexer rest
+                 ("||", rest) -> TokenOr : lexer rest 
                  ("\\", rest) -> TokenLam : lexer rest 
                  ("->", rest) -> TokenArrow : lexer rest 
                  ("=", rest)  -> TokenEq : lexer rest 
