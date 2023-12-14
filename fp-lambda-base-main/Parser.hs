@@ -7,15 +7,15 @@ import qualified Data.Bits as Bits
 import Control.Applicative(Applicative(..))
 import Control.Monad (ap)
 
--- parser produced by Happy Version 1.19.12
+-- parser produced by Happy Version 1.20.1.1
 
 data HappyAbsSyn t4 t5
 	= HappyTerminal (Token)
-	| HappyErrorToken Int
+	| HappyErrorToken Prelude.Int
 	| HappyAbsSyn4 t4
 	| HappyAbsSyn5 t5
 
-happyExpList :: Happy_Data_Array.Array Int Int
+happyExpList :: Happy_Data_Array.Array Prelude.Int Prelude.Int
 happyExpList = Happy_Data_Array.listArray (0,127) ([26400,16393,0,0,0,19263,0,0,0,51200,601,0,0,32,52800,18,128,0,32,46718,0,4096,23544,2,0,26400,16393,4814,0,0,0,29184,150,8192,12,0,45968,57348,6503,0,1,33792,1,0,0,64512,302,22984,2,64,26400,16393,4814,0,0,0,0,1552,0,0,128,0,0,0
 	])
 
@@ -23,14 +23,14 @@ happyExpList = Happy_Data_Array.listArray (0,127) ([26400,16393,0,0,0,19263,0,0,
 happyExpListPerState st =
     token_strs_expected
   where token_strs = ["error","%dummy","%start_parser","Exp","Type","num","'+'","\"&&\"","true","false","if","then","else","var","'\\\\'","\"->\"","'('","')'","'='","let","in","Bool","Num","':'","%eof"]
-        bit_start = st * 25
-        bit_end = (st + 1) * 25
+        bit_start = st Prelude.* 25
+        bit_end = (st Prelude.+ 1) Prelude.* 25
         read_bit = readArrayBit happyExpList
-        bits = map read_bit [bit_start..bit_end - 1]
-        bits_indexed = zip bits [0..24]
-        token_strs_expected = concatMap f bits_indexed
-        f (False, _) = []
-        f (True, nr) = [token_strs !! nr]
+        bits = Prelude.map read_bit [bit_start..bit_end Prelude.- 1]
+        bits_indexed = Prelude.zip bits [0..24]
+        token_strs_expected = Prelude.concatMap f bits_indexed
+        f (Prelude.False, _) = []
+        f (Prelude.True, nr) = [token_strs Prelude.!! nr]
 
 action_0 (6) = happyShift action_2
 action_0 (9) = happyShift action_4
@@ -502,25 +502,25 @@ newtype HappyIdentity a = HappyIdentity a
 happyIdentity = HappyIdentity
 happyRunIdentity (HappyIdentity a) = a
 
-instance Functor HappyIdentity where
+instance Prelude.Functor HappyIdentity where
     fmap f (HappyIdentity a) = HappyIdentity (f a)
 
 instance Applicative HappyIdentity where
     pure  = HappyIdentity
     (<*>) = ap
-instance Monad HappyIdentity where
+instance Prelude.Monad HappyIdentity where
     return = pure
     (HappyIdentity p) >>= q = q p
 
 happyThen :: () => HappyIdentity a -> (a -> HappyIdentity b) -> HappyIdentity b
-happyThen = (>>=)
+happyThen = (Prelude.>>=)
 happyReturn :: () => a -> HappyIdentity a
-happyReturn = (return)
-happyThen1 m k tks = (>>=) m (\a -> k a tks)
+happyReturn = (Prelude.return)
+happyThen1 m k tks = (Prelude.>>=) m (\a -> k a tks)
 happyReturn1 :: () => a -> b -> HappyIdentity a
-happyReturn1 = \a tks -> (return) a
-happyError' :: () => ([(Token)], [String]) -> HappyIdentity a
-happyError' = HappyIdentity . (\(tokens, _) -> parserError tokens)
+happyReturn1 = \a tks -> (Prelude.return) a
+happyError' :: () => ([(Token)], [Prelude.String]) -> HappyIdentity a
+happyError' = HappyIdentity Prelude.. (\(tokens, _) -> parserError tokens)
 parser tks = happyRunIdentity happySomeParser where
  happySomeParser = happyThen (happyParse action_0 tks) (\x -> case x of {HappyAbsSyn4 z -> happyReturn z; _other -> notHappyAtAll })
 
@@ -573,7 +573,7 @@ parserError _ = error "Syntax error!"
 
 
 
-data Happy_IntList = HappyCons Int Happy_IntList
+data Happy_IntList = HappyCons Prelude.Int Happy_IntList
 
 
 
@@ -680,7 +680,7 @@ indexShortOffAddr arr off = arr Happy_Data_Array.! off
 
 
 {-# INLINE happyLt #-}
-happyLt x y = (x < y)
+happyLt x y = (x Prelude.< y)
 
 
 
@@ -688,7 +688,7 @@ happyLt x y = (x < y)
 
 
 readArrayBit arr bit =
-    Bits.testBit (indexShortOffAddr arr (bit `div` 16)) (bit `mod` 16)
+    Bits.testBit (indexShortOffAddr arr (bit `Prelude.div` 16)) (bit `Prelude.mod` 16)
 
 
 
@@ -701,8 +701,8 @@ readArrayBit arr bit =
 
 
 newtype HappyState b c = HappyState
-        (Int ->                    -- token number
-         Int ->                    -- token number (yes, again)
+        (Prelude.Int ->                    -- token number
+         Prelude.Int ->                    -- token number (yes, again)
          b ->                           -- token semantic value
          HappyState b c ->              -- current state
          [HappyState b c] ->            -- state stack
@@ -749,7 +749,7 @@ happySpecReduce_3 nt fn j tk _ ((_):(((_):(sts@(((st@(HappyState (action))):(_))
 happyReduce k i fn (1) tk st sts stk
      = happyFail [] (1) tk st sts stk
 happyReduce k nt fn j tk st sts stk
-     = case happyDrop (k - ((1) :: Int)) sts of
+     = case happyDrop (k Prelude.- ((1) :: Prelude.Int)) sts of
          sts1@(((st1@(HappyState (action))):(_))) ->
                 let r = fn stk in  -- it doesn't hurt to always seq here...
                 happyDoSeq r (action nt j tk st1 sts1 r)
@@ -773,17 +773,17 @@ happyMonad2Reduce k nt fn j tk st sts stk =
 
 
 
-             _ = nt :: Int
+             _ = nt :: Prelude.Int
              new_state = action
 
           in
           happyThen1 (fn stk tk) (\r -> happyNewToken new_state sts1 (r `HappyStk` drop_stk))
 
 happyDrop (0) l = l
-happyDrop n ((_):(t)) = happyDrop (n - ((1) :: Int)) t
+happyDrop n ((_):(t)) = happyDrop (n Prelude.- ((1) :: Prelude.Int)) t
 
 happyDropStk (0) l = l
-happyDropStk n (x `HappyStk` xs) = happyDropStk (n - ((1)::Int)) xs
+happyDropStk n (x `HappyStk` xs) = happyDropStk (n Prelude.- ((1)::Prelude.Int)) xs
 
 -----------------------------------------------------------------------------
 -- Moving to a new state after a reduction
@@ -828,7 +828,7 @@ happyFail explist i tk (HappyState (action)) sts stk =
 -- Internal happy errors:
 
 notHappyAtAll :: a
-notHappyAtAll = error "Internal Happy error\n"
+notHappyAtAll = Prelude.error "Internal Happy error\n"
 
 -----------------------------------------------------------------------------
 -- Hack to get the typechecker to accept our action functions
@@ -846,7 +846,7 @@ notHappyAtAll = error "Internal Happy error\n"
 --      happySeq = happyDontSeq
 
 happyDoSeq, happyDontSeq :: a -> b -> b
-happyDoSeq   a b = a `seq` b
+happyDoSeq   a b = a `Prelude.seq` b
 happyDontSeq a b = b
 
 -----------------------------------------------------------------------------
