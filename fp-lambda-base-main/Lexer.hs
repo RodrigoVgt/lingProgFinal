@@ -9,6 +9,7 @@ data Expr = BTrue
           | Sub Expr Expr
           | And Expr Expr 
           | Or Expr Expr
+          | Gt Expr Expr
           | If Expr Expr Expr 
           | Var String
           | Lam String Ty Expr 
@@ -28,7 +29,8 @@ data Token = TokenTrue
            | TokenAdd
            | TokenSub
            | TokenAnd 
-           | TokenOr 
+           | TokenOr
+           | TokenGt
            | TokenIf 
            | TokenThen 
            | TokenElse
@@ -67,6 +69,7 @@ lexSymbol cs = case span isSymb cs of
                  ("+", rest)  -> TokenAdd : lexer rest 
                  ("-", rest)  -> TokenSub : lexer rest
                  ("&&", rest) -> TokenAnd : lexer rest
+                 (">", rest) -> TokenGt : lexer rest
                  ("||", rest) -> TokenOr : lexer rest 
                  ("\\", rest) -> TokenLam : lexer rest 
                  ("->", rest) -> TokenArrow : lexer rest 
