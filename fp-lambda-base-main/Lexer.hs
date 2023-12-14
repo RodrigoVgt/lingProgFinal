@@ -6,6 +6,7 @@ data Expr = BTrue
           | BFalse 
           | Num Int 
           | Add Expr Expr 
+          | Sub Expr Expr
           | And Expr Expr 
           | If Expr Expr Expr 
           | Var String
@@ -24,6 +25,7 @@ data Token = TokenTrue
            | TokenFalse 
            | TokenNum Int 
            | TokenAdd
+           | TokenSub
            | TokenAnd 
            | TokenIf 
            | TokenThen 
