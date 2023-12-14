@@ -5,4 +5,7 @@ import Parser
 import TypeChecker
 import Interpreter
 
-main = getContents >>= print . eval . typecheck . parser . lexer 
+main :: IO ()
+main = do
+    contents <- readFile "code.mylang"
+    print . eval . typecheck . parser . lexer $ contents

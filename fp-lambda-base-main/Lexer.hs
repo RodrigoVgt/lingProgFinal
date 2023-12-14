@@ -9,12 +9,14 @@ data Expr = BTrue
           | Sub Expr Expr
           | And Expr Expr 
           | Or Expr Expr
+          | Gt Expr Expr
           | If Expr Expr Expr 
           | Var String
           | Lam String Ty Expr 
           | App Expr Expr
           | Paren Expr
           | Let String Expr Expr 
+          | Ternary Expr Expr Expr
           deriving Show
 
 data Ty = TBool 
@@ -28,7 +30,8 @@ data Token = TokenTrue
            | TokenAdd
            | TokenSub
            | TokenAnd 
-           | TokenOr 
+           | TokenOr
+           | TokenGt
            | TokenIf 
            | TokenThen 
            | TokenElse
@@ -43,10 +46,11 @@ data Token = TokenTrue
            | TokenColon
            | TokenBoolean 
            | TokenNumber
+           | TokenTernary
            deriving (Show, Eq)
 
 isSymb :: Char -> Bool 
-isSymb c = c `elem` "+&\\->()=:"
+isSymb c = c `elem` "+&\\->()=:?|-"
 
 lexer :: String -> [Token]
 lexer [] = [] 
@@ -67,11 +71,13 @@ lexSymbol cs = case span isSymb cs of
                  ("+", rest)  -> TokenAdd : lexer rest 
                  ("-", rest)  -> TokenSub : lexer rest
                  ("&&", rest) -> TokenAnd : lexer rest
+                 (">", rest) -> TokenGt : lexer rest
                  ("||", rest) -> TokenOr : lexer rest 
                  ("\\", rest) -> TokenLam : lexer rest 
                  ("->", rest) -> TokenArrow : lexer rest 
                  ("=", rest)  -> TokenEq : lexer rest 
                  (":", rest)  -> TokenColon : lexer rest 
+                 ("?", rest) -> TokenTernary : lexer rest
                  _ -> error "Lexical error: invalid symbol!"
 
 lexKW :: String -> [Token]

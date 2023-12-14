@@ -16,6 +16,7 @@ import Lexer
     '-'         { TokenSub }
     '||'        { TokenOr }
     "&&"        { TokenAnd }
+    '>'         { TokenGt }
     true        { TokenTrue }
     false       { TokenFalse }
     if          { TokenIf }
@@ -32,6 +33,7 @@ import Lexer
     Bool        { TokenBoolean }
     Num         { TokenNumber }
     ':'         { TokenColon }
+    '?'         { TokenTernary }
 
 %%
 
@@ -42,12 +44,14 @@ Exp         : num                           { Num $1 }
             | Exp '-' Exp                   { Sub $1 $3 }
             | Exp "&&" Exp                  { And $1 $3 }
             | Exp '||' Exp                  { Or $1 $3 }
+            | Exp '>' Exp                   { Gt $1 $3 }
             | if Exp then Exp else Exp      { If $2 $4 $6 }
             | var                           { Var $1 }
             | '\\' var ':' Type "->" Exp    { Lam $2 $4 $6 }
             | Exp Exp                       { App $1 $2 }
             | '(' Exp ')'                   { Paren $2 }
             | let var '=' Exp in Exp        { Let $2 $4 $6 }
+            | Exp '?' Exp ':' Exp           { Ternary $1 $3 $5 }
 
 Type    : Bool                              { TBool }
         | Num                               { TNum }
