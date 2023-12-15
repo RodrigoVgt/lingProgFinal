@@ -17,6 +17,7 @@ import Lexer
     '||'        { TokenOr }
     "&&"        { TokenAnd }
     '>'         { TokenGt }
+    '<'         { TokenSt }
     true        { TokenTrue }
     false       { TokenFalse }
     if          { TokenIf }
@@ -45,6 +46,7 @@ Exp         : num                           { Num $1 }
             | Exp "&&" Exp                  { And $1 $3 }
             | Exp '||' Exp                  { Or $1 $3 }
             | Exp '>' Exp                   { Gt $1 $3 }
+            | Exp '<' Exp                   { Gt $1 $3 }
             | if Exp then Exp else Exp      { If $2 $4 $6 }
             | var                           { Var $1 }
             | '\\' var ':' Type "->" Exp    { Lam $2 $4 $6 }

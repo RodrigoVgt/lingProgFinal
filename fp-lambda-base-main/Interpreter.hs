@@ -53,6 +53,12 @@ step (Gt (Num n1) (Num n2)) = if (n1 > n2) then
                                     BFalse
 step (Gt (Num n1) e) = Gt (Num n1) (step e)
 step (Gt e1 e2) = Gt (step e1) e2
+step (St (Num n1) (Num n2)) = if (n1 < n2) then
+                                    BTrue 
+                                  else 
+                                    BFalse
+step (St (Num n1) e) = St (Num n1) (step e)
+step (St e1 e2) = St (step e1) e2
 step (Ternary (Num n) e2 e3) = if n /= 0 then e2 else e3
 step (Ternary BTrue e _) = e
 step (Ternary BFalse _ e) = e

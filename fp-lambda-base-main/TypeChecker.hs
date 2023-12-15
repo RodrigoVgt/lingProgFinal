@@ -16,6 +16,9 @@ typeof ctx (Add e1 e2) = case (typeof ctx e1, typeof ctx e2) of
 typeof ctx (Gt e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TBool 
                        _                      -> Nothing
+typeof ctx (St e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
+                      (Just TNum, Just TNum) -> Just TBool 
+                      _                      -> Nothing
 typeof ctx (Sub e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TNum 
                        _                      -> Nothing
@@ -48,14 +51,20 @@ typeof ctx (App e1 e2) = case (typeof ctx e1, typeof ctx e2) of
 typeof ctx (Let v e1 e2) = case typeof ctx e1 of 
                              Just t1 -> typeof ((v, t1):ctx) e2 
                              _       -> Nothing 
-typeof ctx (Ternary e1 e2 e3) = case typeof ctx e1 of 
-                                Just TBool -> case (typeof ctx e2, typeof ctx e3) of
-                                  (Just t2, Just t3) -> if t2 == t3
-                                                        then Just t2
-                                                        else Just (TFun t2 t3)
-                                  _ -> Nothing
+typeof ctx (Ternary e1 e2 e3) =case typeof ctx e1 of 
+                                Just TBool -> 
+                                  case (typeof ctx e2, typeof ctx e3) of
+                                    (Just t2, Just t3) -> if t2 == t3
+                                                          then Just t2
+                                                          else Just (TFun t2 t3)
+                                    _ -> Nothing
+                                Just TNum -> 
+                                  case (typeof ctx e2, typeof ctx e3) of
+                                    (Just t2, Just t3) -> if t2 == t3
+                                                          then Just t2
+                                                          else Just (TFun t2 t3)
+                                    _ -> Nothing
                                 _ -> Nothing
-
 typecheck :: Expr -> Expr 
 typecheck e = case typeof [] e of 
                 Just _ -> e 
